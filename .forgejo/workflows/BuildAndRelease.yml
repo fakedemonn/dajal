@@ -23,11 +23,7 @@ jobs:
       - name: Resolve release tag
         id: vars
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
-          fi
+          echo "tag=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
 
       - name: Validate tag
         run: |
@@ -56,7 +52,6 @@ jobs:
           PY
 
       - name: Commit version patch
-        if: github.event_name == 'workflow_dispatch'
         run: |
           TAG="${{ steps.vars.outputs.tag }}"
           git config user.name "forgejo-actions"
@@ -71,7 +66,6 @@ jobs:
           fi
 
       - name: Create tag if missing
-        if: github.event_name == 'workflow_dispatch'
         run: |
           TAG="${{ steps.vars.outputs.tag }}"
           git fetch --tags
@@ -82,6 +76,28 @@ jobs:
             git tag "$TAG"
             git push origin "$TAG"
           fi
+
+      - name: Generate release notes
+        run: |
+          TAG="${{ steps.vars.outputs.tag }}"
+          mkdir -p dist/release
+
+          PREV_TAG="$(git tag --sort=-creatordate | grep -v "^$TAG$" | head -n 1 || true)"
+
+          {
+            echo "## $TAG"
+            echo
+
+            if [ -n "$PREV_TAG" ]; then
+              echo "Changes since $PREV_TAG:"
+              echo
+              git log "$PREV_TAG..$TAG" --pretty=format:"- %s (%h)"
+            else
+              echo "Changes:"
+              echo
+              git log "$TAG" --pretty=format:"- %s (%h)"
+            fi
+          } > dist/release/RELEASE_NOTES.md
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -137,7 +153,6 @@ jobs:
 
       - name: Prepare release files
         run: |
-          mkdir -p dist/release
           cp Output/Bundled.lua dist/release/
           cp Output/Preprocessed_Bundled.lua dist/release/
 
@@ -150,5 +165,5 @@ jobs:
           tag: ${{ steps.vars.outputs.tag }}
           token: ${{ secrets.RELEASE_TOKEN }}
           release-dir: dist/release
-          release-notes: auto
+          release-notes-file: dist/release/RELEASE_NOTES.md
           override: true
