@@ -56,7 +56,7 @@ local renderStepped = Signal.new(runService.RenderStepped)
 local menuMaid = Maid.new()
 
 -- Constants.
-local VERSION = "1.1.1"
+local VERSION = "1.1.3"
 local WATERMARK_TITLE = "Lycoris"
 Menu.VERSION = VERSION
 
