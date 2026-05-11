@@ -231,9 +231,17 @@ function VisualsTab.initVisualAssistanceSection(groupbox)
 		Finished = true,
 		Callback = function(value)
 			local dresponse = request({
-				Url = "https://deepwoken.co/api/proxy?url=https://api.deepwoken.co/get?type=all",
+				Url = "https://deepwoken.co/api/proxy/get?type=all",
 				Method = "GET",
-				Headers = { ["Content-Type"] = "application/json" },
+				Headers = { 
+					["Content-Type"] = "application/json",
+					["Accept"] = "application/json",
+       				["Origin"] = "https://deepwoken.co",
+        			["Referer"] = "https://deepwoken.co/builder",
+					["Sec-Fetch-Site"] = "same-origin",
+					["Sec-Fetch-Mode"] = "cors",
+					["Sec-Fetch-Dest"] = "empty",
+			 	},
 			})
 
 			if not dresponse or not dresponse.Success or not dresponse.Body then
@@ -249,9 +257,17 @@ function VisualsTab.initVisualAssistanceSection(groupbox)
 
 			local id = value:gsub("https://deepwoken.co/builder%?id=", ""):gsub(" ", ""):gsub("\n", "")
 			local bresponse = request({
-				Url = ("https://deepwoken.co/api/proxy?url=https://api.deepwoken.co/build?id=%s"):format(id),
+				Url = ("https://deepwoken.co/api/proxy/builds/%s"):format(id),
 				Method = "GET",
-				Headers = { ["Content-Type"] = "application/json" },
+				Headers = { 
+					["Content-Type"] = "application/json",
+					["Accept"] = "application/json",
+					["Origin"] = "https://deepwoken.co",
+					["Referer"] = "https://deepwoken.co/builder",
+					["Sec-Fetch-Site"] = "same-origin",
+					["Sec-Fetch-Mode"] = "cors",
+					["Sec-Fetch-Dest"] = "empty",
+				},
 			})
 
 			if not bresponse or not bresponse.Success or not bresponse.Body then
