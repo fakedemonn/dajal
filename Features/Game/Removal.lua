@@ -148,7 +148,7 @@ return LPH_NO_VIRTUALIZE(function()
 
 		local characterHashes = replicatedStorage:FindFirstChild("CharacterHashes")
 		local characterHashesModule = characterHashes and require(characterHashes)
-		local characterHashData = characterHashesModule and characterHashesModule.GetDynamic(character)
+		local characterHashData = characterHashesModule and characterHashesModule.Snap(character)
 		if not characterHashData then
 			return
 		end
@@ -168,7 +168,7 @@ return LPH_NO_VIRTUALIZE(function()
 
 		local characterHashes = replicatedStorage:FindFirstChild("CharacterHashes")
 		local characterHashesModule = characterHashes and require(characterHashes)
-		local characterHashData = characterHashesModule and characterHashesModule.GetDynamic(character)
+		local characterHashData = characterHashesModule and characterHashesModule.Snap(character)
 		if not characterHashData then
 			return
 		end

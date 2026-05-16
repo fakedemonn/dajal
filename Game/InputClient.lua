@@ -688,7 +688,7 @@ InputClient.slide = LPH_NO_VIRTUALIZE(function()
 
 	local characterHashes = replicatedStorage:FindFirstChild("CharacterHashes")
 	local characterHashesModule = characterHashes and require(characterHashes)
-	local hashData = characterHashesModule and characterHashesModule.GetDynamic(character)
+	local hashData = characterHashesModule and characterHashesModule.Snap(character)
 
 	local healthPercent = humanoid.Health / humanoid.MaxHealth
 	if hashData and hashData["Endurance Runner"] then
@@ -923,7 +923,7 @@ InputClient.dodge = LPH_NO_VIRTUALIZE(function(options)
 
 	local characterHashes = replicatedStorage:FindFirstChild("CharacterHashes")
 	local characterHashesModule = characterHashes and require(characterHashes)
-	local characterHashData = characterHashesModule and characterHashesModule.GetDynamic(character)
+	local characterHashData = characterHashesModule and characterHashesModule.Snap(character)
 	if not characterHashData then
 		return Logger.warn("Cannot dodge without character hash data.")
 	end
