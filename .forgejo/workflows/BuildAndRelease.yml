@@ -104,14 +104,6 @@ jobs:
         with:
           node-version: 18
 
-      - name: Cache npm downloads
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-luabundler
-          restore-keys: |
-            ${{ runner.os }}-npm-
-
       - name: Install luabundler
         run: npm install -g luabundler
 
@@ -128,14 +120,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-
-      - name: Cache pip downloads
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-msgpack
-          restore-keys: |
-            ${{ runner.os }}-pip-
 
       - name: Install Python dependencies
         run: pip install msgpack
