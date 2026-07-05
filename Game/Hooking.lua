@@ -47,7 +47,6 @@ local oldIndex = nil
 local oldPrint = nil
 local oldWarn = nil
 local oldHasEffect = nil
-local oldProtectedCall = nil
 local oldGetKey = nil
 
 -- Cached hooked function.
@@ -1015,6 +1014,7 @@ function Hooking.init()
 		local oldGameMetatableIndex = gameMetatable.__index
 		local oldProtectedCall = nil
 		local oldGetFunctionEnvironment = nil
+		local oldError = nil
 
 		gameMetatable.__index = newcclosure(function(...)
 			local args = { ... }
@@ -1041,7 +1041,25 @@ function Hooking.init()
 			return oldError(...)
 		end)
 
+		local callCount = 0
+
+		-- Fuck you Volt! Imagine having to not call because you can't pcall(function() error("\000", 4) end)
+
+		local isVolt = getexecutorname and getexecutorname():match("Volt")
+
 		oldProtectedCall = hookfunction(pcall, function(...)
+			callCount = callCount + 1
+
+			if isVolt then
+				if callCount == 2 then
+					return false, "\000"
+				elseif callCount == 3 then
+					return false, "\000"
+				elseif callCount == 4 then
+					return false, "KeyHandler - Lycoris On Top"
+				end
+			end
+
 			local results = { oldProtectedCall(...) }
 
 			if lastErrorLevel == 4 then
@@ -1058,13 +1076,10 @@ function Hooking.init()
 		local thread = coroutine.create(func)
 		local results = table.pack(coroutine.resume(thread, ...))
 
-		if not results[1] then
-			return Logger.warn("Spoofed KeyHandler call failed to execute: %s", tostring(results[2]))
+		if results[1] then
+			table.remove(results, 1)
+			results["n"] = nil
 		end
-
-		table.remove(results, 1)
-
-		results["n"] = nil
 
 		gameMetatable.__index = oldGameMetatableIndex
 
@@ -1076,16 +1091,20 @@ function Hooking.init()
 
 		hookfunction(getfenv, oldGetFunctionEnvironment)
 
+		if not results[1] then
+			return Logger.warn("Spoofed KeyHandler call failed to execute: %s", tostring(results[2]))
+		end
+
 		return table.unpack(results)
 	end)
 
 	local keyHandlerTable = spoofedKeyHandlerCall(keyHandlerModule)
 
-	khGetKey = keyHandlerTable[1]
-
-	if typeof(keyHandlerTable) ~= "table" or typeof(khGetKey) ~= "function" then
+	if typeof(keyHandlerTable) ~= "table" or typeof(keyHandlerTable[1]) ~= "function" then
 		return error("An internal error occurred while hooking. KeyHandler table is invalid.")
 	end
+
+	khGetKey = keyHandlerTable[1]
 
 	oldGetKey = hookfunction(
 		khGetKey,
