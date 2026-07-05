@@ -241,15 +241,19 @@ function UpdateNotifier.show(version)
 
 	---Fade in.
 	local function fadeIn()
-		tweenService:Create(overlay, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-			BackgroundTransparency = 0.5
-		}):Play()
+		tweenService
+			:Create(overlay, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				BackgroundTransparency = 0.5,
+			})
+			:Play()
 
 		outer.Size = UDim2.new(0, 360, 0, 320)
 
-		tweenService:Create(outer, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-			Size = UDim2.new(0, 380, 0, 340)
-		}):Play()
+		tweenService
+			:Create(outer, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+				Size = UDim2.new(0, 380, 0, 340),
+			})
+			:Play()
 
 		tweenService:Create(inner, TweenInfo.new(0.3), { BackgroundTransparency = 0 }):Play()
 		tweenService:Create(accentBar, TweenInfo.new(0.3), { BackgroundTransparency = 0 }):Play()
@@ -262,14 +266,18 @@ function UpdateNotifier.show(version)
 
 	---Fade out.
 	local function fadeOut()
-		tweenService:Create(overlay, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-			BackgroundTransparency = 1
-		}):Play()
+		tweenService
+			:Create(overlay, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+				BackgroundTransparency = 1,
+			})
+			:Play()
 
 		tweenService:Create(inner, TweenInfo.new(0.2), { BackgroundTransparency = 1 }):Play()
 		tweenService:Create(accentBar, TweenInfo.new(0.2), { BackgroundTransparency = 1 }):Play()
 		tweenService:Create(separator, TweenInfo.new(0.2), { BackgroundTransparency = 1 }):Play()
-		tweenService:Create(bodyFrame, TweenInfo.new(0.2), { BackgroundTransparency = 1, ScrollBarImageTransparency = 1 }):Play()
+		tweenService
+			:Create(bodyFrame, TweenInfo.new(0.2), { BackgroundTransparency = 1, ScrollBarImageTransparency = 1 })
+			:Play()
 		tweenService:Create(title, TweenInfo.new(0.2), { TextTransparency = 1 }):Play()
 		tweenService:Create(bodyText, TweenInfo.new(0.2), { TextTransparency = 1 }):Play()
 		tweenService:Create(dismissBtn, TweenInfo.new(0.2), { BackgroundTransparency = 1, TextTransparency = 1 }):Play()
@@ -284,7 +292,7 @@ function UpdateNotifier.show(version)
 	-- Fetch release notes from GitHub.
 	task.spawn(function()
 		local success, response = pcall(function()
-			return game:HttpGet("https://api.github.com/repos/Blastbrean/Lycoris-Rewrite/releases/latest")
+			return game:HttpGet("https://git.blastbrean.com/api/v1/repos/lycoris/deepwoken-rewrite/releases/latest")
 		end)
 
 		if success and response then

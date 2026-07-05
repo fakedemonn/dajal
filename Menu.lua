@@ -56,12 +56,13 @@ local renderStepped = Signal.new(runService.RenderStepped)
 local menuMaid = Maid.new()
 
 -- Constants.
-local VERSION = "1.1.5"
-local WATERMARK_TITLE = "Lycoris"
+local VERSION = "1.1.6"
+
 Menu.VERSION = VERSION
 
 -- Get game name dynamically.
 local gameName = "Unknown"
+
 pcall(function()
 	local marketplaceService = game:GetService("MarketplaceService")
 	local productInfo = marketplaceService:GetProductInfo(game.PlaceId)
